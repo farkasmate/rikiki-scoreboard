@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/playerText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="player"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/guessText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="guess" />
+
+        <TextView
+            android:id="@+id/wonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="won" />
+
+        <TextView
+            android:id="@+id/pointsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="points"
+            android:textAlignment="center" />
+    </LinearLayout>
+</LinearLayout>
