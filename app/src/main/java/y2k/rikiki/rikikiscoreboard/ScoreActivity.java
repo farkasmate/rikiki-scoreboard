@@ -6,10 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ScoreActivity extends AppCompatActivity {
+
+    private static final long BACK_THRESHOLD = 1000l;
 
     public static final String DEALER = "y2k.rikiki.rikikiscoreboard.DEALER";
     public static final String PLAYERS = "y2k.rikiki.rikikiscoreboard.PLAYERS";
@@ -19,6 +22,7 @@ public class ScoreActivity extends AppCompatActivity {
     ArrayList<Bundle> scores;
     ArrayAdapter<Bundle> scoreAdapter;
     int maxRounds = 8;
+    long backLastPressed = 0l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,17 @@ public class ScoreActivity extends AppCompatActivity {
 
             scores.add(score);
             scoreAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - backLastPressed > BACK_THRESHOLD) {
+            backLastPressed = System.currentTimeMillis();
+            Toast toast = Toast.makeText(getApplicationContext(), "Tap back again to exit.", Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            super.onBackPressed();
         }
     }
 }
