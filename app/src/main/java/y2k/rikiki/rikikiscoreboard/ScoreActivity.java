@@ -2,8 +2,10 @@ package y2k.rikiki.rikikiscoreboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,7 +24,7 @@ public class ScoreActivity extends AppCompatActivity {
     ArrayList<String> players;
     ArrayList<Bundle> scores;
     ArrayAdapter<Bundle> scoreAdapter;
-    int maxRounds = 8;
+    int maxRounds = 10;
     int nextRound = 1;
     boolean incrementRound = true;
     long backLastPressed = 0l;
@@ -38,14 +40,20 @@ public class ScoreActivity extends AppCompatActivity {
         ListView scoreListView = (ListView) findViewById(R.id.scoreListView);
         scoreAdapter = new ScoreAdapter(this, R.layout.score_list_single_item, players, scores);
         scoreListView.setAdapter(scoreAdapter);
-    }
-
-    public void newRound(View view) {
-        Intent roundIntent = new Intent(this, RoundActivity.class);
-        roundIntent.putExtra(DEALER, players.get((nextRound - 1) % players.size()));
-        roundIntent.putStringArrayListExtra(PLAYERS, players);
-        roundIntent.putExtra(ROUND, nextRound);
-        startActivityForResult(roundIntent, 0);
+        scoreListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FloatingActionButton newRoundButton = (FloatingActionButton) findViewById(R.id.newRoundButton);
+                switch (newRoundButton.getVisibility()) {
+                    case View.VISIBLE:
+                        newRoundButton.setVisibility(View.INVISIBLE);
+                        break;
+                    case View.INVISIBLE:
+                        newRoundButton.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -77,11 +85,19 @@ public class ScoreActivity extends AppCompatActivity {
                 if (nextRound > 1) {
                     nextRound--;
                 } else {
-                    Button newRoundButton = (Button) findViewById(R.id.newRoundButton);
+                    FloatingActionButton newRoundButton = (FloatingActionButton) findViewById(R.id.newRoundButton);
                     newRoundButton.setVisibility(View.GONE);
                 }
             }
         }
+    }
+
+    public void newRound(View view) {
+        Intent roundIntent = new Intent(this, RoundActivity.class);
+        roundIntent.putExtra(DEALER, players.get((nextRound - 1) % players.size()));
+        roundIntent.putStringArrayListExtra(PLAYERS, players);
+        roundIntent.putExtra(ROUND, nextRound);
+        startActivityForResult(roundIntent, 0);
     }
 
     @Override
