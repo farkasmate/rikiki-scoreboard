@@ -11,10 +11,25 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    if ("$System.env.SIGN_RELEASE" == "true") {
+        signingConfigs {
+            release {
+                storeFile file(new String(System.console().readLine("\nKeystore path: ")))
+                storePassword = new String(System.console().readPassword("Keystore password: "))
+                keyAlias = new String(System.console().readLine("Key alias: "))
+                keyPassword = new String(System.console().readPassword("Key password: "))
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if ("$System.env.SIGN_RELEASE" == "true") {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
