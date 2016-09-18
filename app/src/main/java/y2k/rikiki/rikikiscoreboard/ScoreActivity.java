@@ -3,12 +3,15 @@ package y2k.rikiki.rikikiscoreboard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ public class ScoreActivity extends AppCompatActivity {
     ArrayList<String> players;
     ArrayList<Bundle> scores;
     ArrayAdapter<Bundle> scoreAdapter;
-    int maxRounds = 10;
+    int maxRounds = 8;
     int nextRound = 1;
     boolean incrementRound = true;
     long backLastPressed = 0l;
@@ -34,26 +37,42 @@ public class ScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.score);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Scores");
+
         players = new ArrayList<String>(getIntent().getStringArrayListExtra(SettingsActivity.PLAYERS));
         scores = new ArrayList<>();
+
+        LinearLayout playersLayout = (LinearLayout) findViewById(R.id.playersLayout);
+        for (String player : players) {
+            TextView playerText = new TextView(this);
+            playerText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+            playerText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            playerText.setText(player);
+            playersLayout.addView(playerText);
+        }
 
         ListView scoreListView = (ListView) findViewById(R.id.scoreListView);
         scoreAdapter = new ScoreAdapter(this, R.layout.score_list_single_item, players, scores);
         scoreListView.setAdapter(scoreAdapter);
-        scoreListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FloatingActionButton newRoundButton = (FloatingActionButton) findViewById(R.id.newRoundButton);
-                switch (newRoundButton.getVisibility()) {
-                    case View.VISIBLE:
-                        newRoundButton.setVisibility(View.INVISIBLE);
-                        break;
-                    case View.INVISIBLE:
-                        newRoundButton.setVisibility(View.VISIBLE);
-                        break;
-                }
-            }
-        });
+//        scoreListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                FloatingActionButton newRoundButton = (FloatingActionButton) findViewById(R.id.newRoundButton);
+//                switch (newRoundButton.getVisibility()) {
+//                    case View.VISIBLE:
+//                        newRoundButton.setVisibility(View.INVISIBLE);
+//                        break;
+//                    case View.INVISIBLE:
+//                        newRoundButton.setVisibility(View.VISIBLE);
+//                        break;
+//                }
+//            }
+//        });
+
+        if (scores.isEmpty()) {
+            newRound(null);
+        }
     }
 
     @Override
@@ -87,6 +106,21 @@ public class ScoreActivity extends AppCompatActivity {
                 } else {
                     FloatingActionButton newRoundButton = (FloatingActionButton) findViewById(R.id.newRoundButton);
                     newRoundButton.setVisibility(View.GONE);
+
+                    int maxPoints = Integer.MIN_VALUE;
+                    String winner = "";
+                    for (String player : score.keySet()) {
+                        RoundResult roundResult = score.getParcelable(player);
+                        int points = roundResult.getPoints();
+                        if (points > maxPoints) {
+                            maxPoints = points;
+                            winner = player;
+                        } else if (points == maxPoints && ! "".equals(winner)) {
+                            winner = winner + " and " + player;
+                        }
+                    }
+                    ActionBar actionBar = getSupportActionBar();
+                    actionBar.setTitle(winner +" won the game");
                 }
             }
         }

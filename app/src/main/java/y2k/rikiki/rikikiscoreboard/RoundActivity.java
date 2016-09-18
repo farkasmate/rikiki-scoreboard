@@ -2,6 +2,8 @@ package y2k.rikiki.rikikiscoreboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,18 +35,23 @@ public class RoundActivity extends AppCompatActivity {
         players = intent.getStringArrayListExtra(ScoreActivity.PLAYERS);
         round = intent.getIntExtra(ScoreActivity.ROUND, 0);
 
-        TextView dealerNameText = (TextView) findViewById(R.id.dealerNameText);
-        dealerNameText.setText(dealer);
-        TextView roundText = (TextView) findViewById(R.id.roundText);
-        roundText.setText(String.valueOf(round));
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(dealer + " deals " + round);
+
+        LinearLayout playersLayout = (LinearLayout) findViewById(R.id.playersLayout);
+        for (String player : players) {
+            TextView playerText = new TextView(this);
+            playerText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+            playerText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            playerText.setText(player);
+            playersLayout.addView(playerText);
+        }
 
         LinearLayout guessLinearLayout = (LinearLayout) findViewById(R.id.guessLinearLayout);
         for (String player : players) {
             View guessPickerView = LayoutInflater.from(this).inflate(R.layout.player_picker, null);
             guessPickerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
-            TextView playerText = (TextView) guessPickerView.findViewById(R.id.playerText);
-            playerText.setText(player);
             NumberPicker guessNumberPicker = (NumberPicker) guessPickerView.findViewById(R.id.numberPicker);
             guessNumberPicker.setMinValue(0);
             guessNumberPicker.setMaxValue(round);
@@ -58,12 +65,11 @@ public class RoundActivity extends AppCompatActivity {
 
         LinearLayout guessLinearLayout = (LinearLayout) findViewById(R.id.guessLinearLayout);
         for (int i = 0; i < guessLinearLayout.getChildCount(); i++) {
-            TextView playerText = (TextView) guessLinearLayout.getChildAt(i).findViewById(R.id.playerText);
             NumberPicker guessNumberPicker = (NumberPicker) guessLinearLayout.getChildAt(i).findViewById(R.id.numberPicker);
             guessNumberPicker.setEnabled(false);
             RoundResult roundResult = new RoundResult();
             roundResult.setGuess(guessNumberPicker.getValue());
-            score.putParcelable(playerText.getText().toString(), roundResult);
+            score.putParcelable(players.get(i), roundResult);
         }
 
         LinearLayout wonLinearLayout = (LinearLayout) findViewById(R.id.wonLinearLayout);
@@ -71,8 +77,6 @@ public class RoundActivity extends AppCompatActivity {
             View wonPickerView = LayoutInflater.from(this).inflate(R.layout.player_picker, null);
             wonPickerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
-            TextView playerText = (TextView) wonPickerView.findViewById(R.id.playerText);
-            playerText.setText(player);
             NumberPicker wonNumberPicker = (NumberPicker) wonPickerView.findViewById(R.id.numberPicker);
             wonNumberPicker.setMinValue(0);
             wonNumberPicker.setMaxValue(round);
@@ -80,15 +84,14 @@ public class RoundActivity extends AppCompatActivity {
             wonLinearLayout.addView(wonPickerView);
         }
 
-        Button rikikiButton = (Button) findViewById(R.id.rikikiButton);
-        rikikiButton.setText("OK");
+        FloatingActionButton rikikiButton = (FloatingActionButton) findViewById(R.id.rikikiButton);
+        rikikiButton.setImageResource(R.drawable.ic_ok);
         rikikiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LinearLayout wonLinearLayout = (LinearLayout) findViewById(R.id.wonLinearLayout);
                 for (int i = 0; i < wonLinearLayout.getChildCount(); i++) {
-                    TextView playerText = (TextView) wonLinearLayout.getChildAt(i).findViewById(R.id.playerText);
-                    String player = playerText.getText().toString();
+                    String player = players.get(i);
                     NumberPicker wonNumberPicker = (NumberPicker) wonLinearLayout.getChildAt(i).findViewById(R.id.numberPicker);
                     RoundResult roundResult = score.getParcelable(player);
                     roundResult.setWon(wonNumberPicker.getValue());

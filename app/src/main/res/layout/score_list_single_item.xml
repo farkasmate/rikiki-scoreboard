@@ -2,39 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/playerText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="player"
-        android:textAlignment="center" />
+    android:orientation="horizontal">
 
     <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"/>
+
+    <TextView
+        android:id="@+id/guessText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="guess" />
+
+    <TextView
+        android:id="@+id/slashText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="/" />
+
+    <TextView
+        android:id="@+id/wonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="won" />
+
+    <LinearLayout
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"/>
+
+    <TextView
+        android:id="@+id/pointsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/guessText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:text="guess" />
-
-        <TextView
-            android:id="@+id/wonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:text="won" />
-
-        <TextView
-            android:id="@+id/pointsText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="points"
-            android:textAlignment="center" />
-    </LinearLayout>
+        android:layout_weight="1"
+        android:text="points"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"/>
 </LinearLayout>

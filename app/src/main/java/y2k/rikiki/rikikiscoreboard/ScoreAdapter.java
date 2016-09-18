@@ -41,10 +41,6 @@ public class ScoreAdapter extends ArrayAdapter<Bundle> {
             for (String player : keyOrder) {
                 View singleScoreView = LayoutInflater.from(getContext()).inflate(layout, null);
                 singleScoreView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-
-                TextView playerText = (TextView) singleScoreView.findViewById(R.id.playerText);
-                playerText.setText(player);
-
                 multiScoreView.addView(singleScoreView);
             }
 
@@ -55,9 +51,7 @@ public class ScoreAdapter extends ArrayAdapter<Bundle> {
         Bundle round = rounds.get(position);
         for (int i = 0; i < multiScoreView.getChildCount(); i++) {
             View singleScoreView = multiScoreView.getChildAt(i);
-
-            TextView playerText = (TextView) singleScoreView.findViewById(R.id.playerText);
-            String player = playerText.getText().toString();
+            String player = keyOrder.get(i);
             RoundResult roundResult = round.getParcelable(player);
 
             TextView guessText = (TextView) singleScoreView.findViewById(R.id.guessText);
