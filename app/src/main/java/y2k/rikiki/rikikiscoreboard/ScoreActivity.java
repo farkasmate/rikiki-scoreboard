@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +23,8 @@ public class ScoreActivity extends AppCompatActivity {
     ArrayList<Bundle> scores;
     ArrayAdapter<Bundle> scoreAdapter;
     int maxRounds = 8;
+    int nextRound = 1;
+    boolean incrementRound = true;
     long backLastPressed = 0l;
 
     @Override
@@ -39,9 +42,9 @@ public class ScoreActivity extends AppCompatActivity {
 
     public void newRound(View view) {
         Intent roundIntent = new Intent(this, RoundActivity.class);
-        roundIntent.putExtra(DEALER, "DEALER");
+        roundIntent.putExtra(DEALER, players.get((nextRound - 1) % players.size()));
         roundIntent.putStringArrayListExtra(PLAYERS, players);
-        roundIntent.putExtra(ROUND, 3);
+        roundIntent.putExtra(ROUND, nextRound);
         startActivityForResult(roundIntent, 0);
     }
 
@@ -62,6 +65,22 @@ public class ScoreActivity extends AppCompatActivity {
 
             scores.add(score);
             scoreAdapter.notifyDataSetChanged();
+
+            if (incrementRound) {
+                if (nextRound < maxRounds) {
+                    nextRound++;
+                } else {
+                    incrementRound = false;
+                    nextRound--;
+                }
+            } else {
+                if (nextRound > 1) {
+                    nextRound--;
+                } else {
+                    Button newRoundButton = (Button) findViewById(R.id.newRoundButton);
+                    newRoundButton.setVisibility(View.GONE);
+                }
+            }
         }
     }
 
